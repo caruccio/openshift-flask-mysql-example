@@ -1,4 +1,4 @@
-from flask import Flask, abort
+from flask import Flask, abort, request
 app = Flask(__name__)
 
 from flask import Flask
@@ -49,12 +49,18 @@ def index():
         users.append('{u.id}: <strong>{u.username}</strong> ({u.email})'.format(u=user))
     return '<br>'.join(users)
 
-@app.route("/<name>")
+@app.route("/<name>", methods=['GET', 'POST'])
 def user(name):
-    user = User.query.filter_by(username=name).first()
-    if user is None:
-        abort(404)
-    return '{u.id}: <strong>{u.username}</strong> ({u.email})'.format(u=user)
+    if request.method == 'POST':
+        user = User(name, request.form['email'])
+        db.session.add(user)
+        db.session.commit()
+        return 'OK\n'
+    else:
+        user = User.query.filter_by(username=name).first()
+        if user is None:
+            abort(404)
+        return '{u.id}: <strong>{u.username}</strong> ({u.email})'.format(u=user)
 
 if __name__ == "__main__":
     app.run()
