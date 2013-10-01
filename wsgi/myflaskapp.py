@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask, abort
 app = Flask(__name__)
 
 from flask import Flask
@@ -48,6 +48,13 @@ def index():
     for user in User.query.all():
         users.append('{u.id}: <strong>{u.username}</strong> ({u.email})'.format(u=user))
     return '<br>'.join(users)
+
+@app.route("/<name>")
+def user(name):
+    user = User.query.filter_by(username=name).first()
+    if user is None:
+        abort(404)
+    return '{u.id}: <strong>{u.username}</strong> ({u.email})'.format(u=user)
 
 if __name__ == "__main__":
     app.run()
