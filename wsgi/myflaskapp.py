@@ -63,5 +63,14 @@ def user(name):
         return '{u.id}: <strong>{u.username}</strong> ({u.email})'.format(u=user)
 
 if __name__ == "__main__":
+    from sys import argv
+    if len(argv) > 1 and argv[1] == 'initdb':
+        db.create_all()
+        for name in [ 'admin', 'guest' ]:
+            user = User(name, '%s@example.com' % name)
+            db.session.add(user)
+        db.session.commit()
+        sys.exit(0)
+        
     app.run()
 
