@@ -1,7 +1,6 @@
 from flask import Flask, abort, request
 app = Flask(__name__)
 
-from flask import Flask
 from flask.ext.sqlalchemy import SQLAlchemy
 
 from os import environ
